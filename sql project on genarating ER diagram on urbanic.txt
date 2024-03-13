@@ -1,0 +1,151 @@
+create database urbanic;
+drop database urbanic;
+use urbanic;
+
+create table myaccount(
+myaccount_id int primary key auto_increment,
+login varchar (60) not null,
+singin  varchar(70) not null);
+
+
+
+
+
+
+create table signin( 
+user_id int primary key auto_increment,
+myaccount_ids int not null,
+email varchar(80) not null, 
+password varchar (225) not null
+);
+
+
+
+select *from myaccount;
+
+
+
+insert into signin (myaccount_ids,email,password) 
+values (1,'ashibabjan@gmail.com','ashiashu'),
+(2,'babjanashu@gmail.com','ammubabjan'),
+(3,'rameeja@gmail.com','rameeja');
+select*from signin;
+
+select*from signin where email= 'ashibabjan@gmail.com' and password ="ashiashu";
+
+select*from myaccount inner join signin on 'myaccount.sigin'='sigin.sigin';
+
+create table myprofile ( name varcHAR (60) NOT NULL,
+birthday date not null,
+gender varchar (90) not null,
+categorypreferences varchar (70));
+
+insert into myprofile (name,birthday,gender,categorypreferences) values
+('ashifa','2001-12-13',"female","denim"),
+('abbas ali','2001-06-12','male','shirts'),
+('althaf','2001-07-10','male','hoodies'),
+('vasuki','1998-02-17','female','tops'),
+('akshatha','1998-03-14','female','blouses'),
+('sam','2001-07-18','male','t-shirts');
+
+select*from myprofile;
+
+select* from myprofile where categorypreferences="tops";
+
+create table address( contact_id int auto_increment primary key,
+full_name varchar(245),
+mobile_number bigint not null unique ,
+email varchar(225) not null,
+house_no int not null,
+locality varchar(90) not null,
+pincode int not null,
+city varchar(80) not null,
+state varchar(218) not null);
+
+
+insert into address(full_name,mobile_number,email,house_no,pincode,locality,city,state)
+values('ashifa',9059439382,'ashibabjan@gmail.com',12-42,515551,'india','anathapur','andhra pradesh'),
+('abbasali',9676617362,'abbas@gmail.com',52-12,555234,'russia','vijawada','andhra pradesh'),
+('indhuvemula',9543675423,'indhuvemula@gmail.com',67-32,555436,'usa','maggalu','tamilnadu'),
+('rajivlochan',9785642976,'rajivlochan22@gmail.com',667-43,565453,'uk','narasapur','guntur'),
+('anil',6306542755,'anilgoud@gmail.com',98-42,567435,'germany','chicagoi','telangana');
+
+select*from address;
+
+create table products(
+ products_id int auto_increment not null primary key,
+productname varchar(100) not null,
+category varchar(100) not null,
+price int not null,
+special_offers char(90)not null);
+
+insert into products(productname ,category,price,special_offers)
+values('Straight Leg Jeans','clothing',2300," "),
+('Alphabet Print Baseball Caps','accessories',4500," "),
+('Geometric Artificial Jewellery - Stud','jewelry',2000," "),
+('thirsts_sweatthirts','tops',500," "),
+('pants','bottoms',700,'upto 20% off'),
+('coats','outercoat',3500," "),
+('lingerie','longwear_leggins',800,'upto 40% off'),
+('maxi dresses','shop_bylength',900," "),
+( 'bodycon dresses','dresses',500," "),
+('cardigans','kintwear',3500,'upto 30% off'),
+('jackets','denim',5000," "),
+('bikini sets','swimmers',500,'upto 60% off'),
+('bras','spots',900,'upto 50% off');
+select*from products;
+
+
+create table mybag(mybag_id int auto_increment not null primary key, product_id int not null, user_id int not null );
+
+insert into mybag(product_id, user_id) values(101,1),(102,2),(103,5),(104,6);
+
+select*from mybag;
+alter table items add foreign key(mybag_ids) references mybag(mybag_id);
+
+create table items(itemid int auto_increment not null primary key,mybag_ids int not null, itemtype varchar(60) not null);
+drop table items;
+
+insert into items (mybag_ids, itemtype) values(101,'jeans'),(103,'shits'),(104,'bikinisets');
+select*from items;
+
+SELECT mybag.product_id, Items.ItemType
+FROM 
+  myBag INNER JOIN 
+  Items ON myBag.product_id = 'Items.product_id'
+WHERE ItemType = 'jeans' AND ItemType = 'shirts';
+
+create table orders(
+order_id int auto_increment primary key,
+user_id int,
+order_date timestamp default current_timestamp,
+total_amount decimal(10,2) not null);
+insert into orders(user_id,total_amount) values
+(1,1500),
+(2,2500),
+(3,000);
+select*from orders;
+
+create table orderitem(
+order_item_id int auto_increment primary key,
+order_id int,
+product_id int,
+quantity int not null);
+
+
+insert into orderitem(order_id,product_id ,quantity ) values(1,1,3),(1,2,4),(1,3,5);
+select*from orderitem;
+
+alter table orders add foreign key(user_id) references signin(user_id);
+
+alter table orderitem add foreign key(order_id) references orders(order_id);
+alter table orderitem add foreign key(product_id) references products(products_id);
+
+select signin.user_id as user_id,orders.order_id,orders.order_date,
+products.productname as productname,products.price
+from signin
+inner join orders on signin.user_id='orders.user'
+inner join orderitem on
+orders.order_id='orderitem.order_id'
+inner join products on
+'orderitem.product_id'='products.product_id';
